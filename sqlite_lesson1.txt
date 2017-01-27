@@ -1,0 +1,59 @@
+create table cities (name text, state text);
+
+INSERT INTO cities (name, state) VALUES
+    ('New York City', 'NY'),
+    ('Boston', 'MA'),
+    ('Chicago', 'IL'),
+    ('Miami', 'FL'),
+    ('Dallas', 'TX'),
+    ('Seattle', 'WA'),
+    ('Portland', 'OR'),
+    ('San Francisco', 'CA'),
+    ('Los Angeles', 'CA');
+    
+create table weather (city text, year integer, warm_month text, cold_month text, average_high integer);
+insert into weather (city, year, warm_month, cold_month, average_high) values
+	('New York City', 2013, 'July', 'January', 62),
+	('Boston', 2013, 'July', 'January', 59), 
+	('Chicago', 2013, 'July', 'January', 59),
+	('Miami', 2013, 'August', 'January', 84), 
+	('Dallas', 2013, 'July', 'January', 77), 
+	('Seattle', 2013, 'July', 'January', 61), 
+	('Portland', 2013, 'July', 'December', 63),
+	('San Francisco', 2013, 'September', 'December', 64), 
+	('Los Angeles', 2013, 'September', 'December', 75);
+
+* 1.) gives a count of the rows from the table, of which there are 9
+select count(year) from weather;
+
+* 2.) obtain the cities that experienced the hottest weather in July
+select city from weather where warm_month = 'July'; 
+
+
+* 3.) obtain the cities that are the hottest in july but not the coldest in january
+select city from weather where warm_month = 'July' and cold_month != 'January';
+
+/* returns seattle and portland; but the table shows it should only be portland. looking
+at what data i entered shows that i mistakenly put december in place for seattle. */
+
+select city from weather where warm_month = max(average_high) and cold_month != min(average_high)
+
+* obtain the first two cities which were coldest in january
+select city from weather where cold_month = 'January' limit 2;
+
+
+
+
+/* an example of changing the data in your table */
+update cities set state = 'CA' where state = 'Californ-I-A' ;
+
+/* to remove data from your table */
+delete from cities where state = 'CA';
+
+/* write a sql statement that finds the mean of the average high_temperatures of all the cities within a state */
+select state,  avg(average_high) from cities inner join weather on name = city group by state;
+
+/* write a query that finds the mean of the average high temps for all the cities within a state, starting 
+   with the hottest and filtering out states with a mean above 65 degrees */
+   
+   select state, avg(average_high) from weather inner join cities on name = city where average_high > 65 group by state;
